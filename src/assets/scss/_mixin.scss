@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+// Clearfix
+// @type clear
+@mixin clearfix {
+	&:after {
+		content:"";
+		display:block;
+		clear:both;
+	}
+}
+
+// Table
+@mixin table {
+    
+}
+
+// Text Ellipsis (IE fix)
+// @type text
+@mixin ellipsis($line:null, $height:auto, $lineHeight:inherit) {
+	@if ($line == null) {
+		overflow:hidden;
+		text-overflow:ellipsis;
+		white-space:nowrap;
+	} @else {
+		display:-webkit-box;
+		overflow:hidden;
+		height:$height;
+		text-overflow:ellipsis;
+		line-height:$lineHeight;
+		-webkit-box-orient:vertical;
+		-webkit-line-clamp:$line;
+	}
+}
+
+// Default Transition
+// @type transition
+@mixin transition($speed:0.3s, $easing:ease-out, $delay:0s) {
+	-webkit-transition:all $speed $easing $delay;
+	transition:all $speed $easing $delay;
+}

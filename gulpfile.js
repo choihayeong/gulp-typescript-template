@@ -8,17 +8,27 @@ const gulp = require("gulp"),
     minCSS = require("gulp-csso"),
     bro = require("gulp-bro"),
     babelify = require("babelify"),
-    ghPages = require("gulp-gh-pages");
+    ghPages = require("gulp-gh-pages"),
+    nodemon = require('gulp-nodemon'),
+	browserSync = require('browser-sync').create();
 
 const ROUTES = {
     HTML: {
         src: "./src/html/*",
-        dest: "./build/",
+        dest: "./build/html/",
         watch: "./src/html/**/*.html"
     },
     IMAGE: {
         src: "./src/assets/images/*",
         dest: "./build/assets/images/",
+    },
+    FONT: {
+        src: "./src/assets/font/*",
+        dest: "./build/assets/font/",
+    },
+    LIB: {
+        src: "./src/assets/lib/*",
+        dest: "./build/assets/lib/",
     },
     SCSS: {
         src: "./src/assets/scss/style.scss",
@@ -44,9 +54,9 @@ const gulpEJS = () =>
 const clean = () =>
     del(["build", ".publish"]);
 
-const webserver = () =>
+/* const webserver = () =>
     gulp.src(ROUTES.HTML.dest)
-        .pipe(ws({path: "/", livereload: true, open: true}));
+        .pipe(ws({path: "/", livereload: true, open: true})); */
 
 
 // If you want to use imagemin version 8,
@@ -75,6 +85,14 @@ const style = () =>
         .pipe(minCSS())
         .pipe(gulp.dest(ROUTES.SCSS.dest));
 
+const library = () => 
+    gulp.src(ROUTES.LIB.src + '/*')
+        .pipe(gulp.dest(ROUTES.LIB.dest));
+
+const fonts = () => 
+    gulp.src(ROUTES.FONT.src)
+        .pipe(gulp.dest(ROUTES.FONT.dest));
+
 const script = () => 
     gulp.src(ROUTES.SCRIPT.src)
         .pipe(bro({
@@ -85,20 +103,35 @@ const script = () =>
         }))
         .pipe(gulp.dest(ROUTES.SCRIPT.dest));
 
+const BrowserSync = () => {
+    return new Promise(resolve => {
+		browserSync.init({proxy: 'http://localhost:8005', port: 8006});
+		resolve();
+	});
+}
+
+const serverStart = () => {
+    return new Promise(resolve => {
+		nodemon({script: 'app.js', watch: 'app'});
+		resolve();
+	});
+}
+
 const gh = () => 
     gulp.src("build/**/*")
         .pipe(ghPages());
 
 const watch = () => {
     gulp.watch(ROUTES.HTML.src + "*", gulpEJS);
-    gulp.watch(ROUTES.IMAGE.src, image);
+    gulp.watch(ROUTES.FONT.src, fonts);
+    gulp.watch(ROUTES.LIB.src, library);
     gulp.watch(ROUTES.SCSS.watch, style);
     gulp.watch(ROUTES.SCRIPT.watch, script);
 }
 
 const prepare = gulp.series([clean]);
-const assets = gulp.parallel([html, image, style, script, gulpEJS]);
-const live = gulp.parallel([webserver, watch, gulpEJS]);
+const assets = gulp.parallel([html, image, style, library, fonts, script, gulpEJS]);
+const live = gulp.parallel([watch, gulpEJS, BrowserSync, serverStart]);
 
 module.exports = {
     "build": gulp.series([prepare, assets]),
