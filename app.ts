@@ -5,8 +5,8 @@ app.set('views', '${ __dirname }/build');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use('/', express.static(`${__dirname}/build`));
-app.get('/', (req, res) => {
+app.get('/', (req : any, res: any) => {
 	res.render('index', {});
 });
-var server = app.listen(8005, () => {
+var server = app.listen(3030, () => {
 });
