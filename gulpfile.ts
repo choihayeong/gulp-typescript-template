@@ -22,8 +22,8 @@ const OUT_PATH = tsConfig.compilerOptions.outDir as string;
 const TRANSPILE_PATH = tsConfig.include || "./src/**/*.ts";
 const ASSETS_PATH = {
   HTML: {
-    src: "./src/html/*",
-    dest: "./build/html/",
+    src: "./src/**/*.html",
+    dest: "./build/",
   },
   SCSS: {
     src: "./src/assets/scss/style.scss",
