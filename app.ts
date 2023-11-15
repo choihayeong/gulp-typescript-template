@@ -1,5 +1,8 @@
-var express = require('express');
-var app = express();
+import express from "express";
+
+const app = express();
+
+const PORT = 3030;
 
 app.set('views', '${ __dirname }/build');
 app.engine('html', require('ejs').renderFile);
@@ -8,5 +11,7 @@ app.use('/', express.static(`${__dirname}/build`));
 app.get('/', (req, res) => {
 	res.render('index', {});
 });
-var server = app.listen(8005, () => {
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
