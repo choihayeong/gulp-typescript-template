@@ -1,12 +1,17 @@
-var express = require('express');
-var app = express();
+import express from "express";
+
+const app = express();
+
+const PORT = 3030;
 
 app.set('views', '${ __dirname }/build');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use('/', express.static(`${__dirname}/build`));
-app.get('/', (req : any, res: any) => {
+app.get('/', (req, res) => {
 	res.render('index', {});
 });
-var server = app.listen(3030, () => {
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
