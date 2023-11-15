@@ -1,8 +1,7 @@
 # gulp-setting
-gulp setting for building a development environment
+gulp template for building a development environment and studying typescript
 
 ## package.json 파일
-
 ```json
   "devDependencies": {
     "@babel/core": "^7.17.10",
@@ -41,3 +40,5 @@ gulp setting for building a development environment
 - ```"gulp-webserver": "^0.9.1",``` 삭제
 - ```"gulp-imagemin": "^7.1.0",``` : gulp-imagemin은 7버전 사용
 
+## gulpfile.ts 환경 세팅
+- <a href="https://github.com/choihayeong/gulp-setting/wiki/Setting-gulpfile.ts">Wiki</a>
