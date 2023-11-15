@@ -49,4 +49,4 @@ gulp template for building a development environment and studying typescript
 - ```"gulp-imagemin": "^7.1.0",``` : gulp-imagemin은 7버전 사용
 
 ## gulpfile.ts 환경 세팅
-- <a href="https://github.com/choihayeong/gulp-setting/wiki/Setting-gulpfile.ts">Wiki</a>
+- <a href="https://github.com/choihayeong/gulp-typescript-template/wiki">Wiki</a>
