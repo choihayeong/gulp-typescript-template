@@ -3,7 +3,8 @@ import nodemon from "gulp-nodemon";
 import ts from "gulp-typescript";
 import dartSass from "sass";
 import gulpSass from "gulp-sass";
-import imagemin from "gulp-imagemin";
+import autoprefixer from "gulp-autoprefixer";
+import imagemin, { gifsicle, mozjpeg, optipng, svgo } from "gulp-imagemin";
 import deleteAsync from "del";
 
 const ejs = require("gulp-ejs");
@@ -76,13 +77,34 @@ const gulpEJS = () =>
 
 const style = () =>
   src(ASSETS_PATH.SCSS.src)
-    .pipe(sass().on("error", sass.logError))
+    .pipe(sass({
+      outputStyle: "compressed", // compressed 속성 값을 주면 빌드 시 css가 minify 되어 나옴 
+    }).on("error", sass.logError))
+    .pipe(autoprefixer({
+      browsers: ["last 2 versions"]
+    }))
     .pipe(dest(ASSETS_PATH.SCSS.dest));
     
 // gulp-imagemin
 const images = () => 
   src(ASSETS_PATH.IMAGE.src)
-    .pipe(imagemin())
+    .pipe(imagemin([
+      gifsicle({interlaced: false}),
+      mozjpeg({quality: 75, progressive: false}),
+      optipng({optimizationLevel: 5}),
+      svgo({
+        plugins: [
+          {
+            name: "removeViewBox",
+            active: true
+          },
+          {
+            name: "cleanupIDs",
+            active: false
+          }
+        ]
+      })
+    ]))
     .pipe(dest(ASSETS_PATH.IMAGE.dest));
 
 const serverStart = () => {
@@ -103,7 +125,8 @@ const BrowserSync = () => {
       // server: {
       //   baseDir: "./"
       // },
-      proxy: "http://localhost:3030"
+      proxy: "http://localhost:3030", // app.ts의 port와 같음
+      port: 8080,
     });
     resolve();
   });
@@ -115,6 +138,7 @@ const watching = () => {
   watch(ASSETS_PATH.HTML.src + "*", gulpEJS).on("change", browserSync.reload);
   watch(ASSETS_PATH.SCSS.watch, style).on("change", browserSync.reload);
   watch(ASSETS_PATH.SCRIPT.watch, getBrowserScript).on("change", browserSync.reload);
+  watch(ASSETS_PATH.IMAGE.src, images);
 }
 
 // del (clean)
